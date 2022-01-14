@@ -1,16 +1,18 @@
 <?php
 use Behat\Behat\Tester\Exception\PendingException;
+use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert as Assert;
 
-class ContextAutorization implements SnippetAcceptingContext
+class AutorizationContext implements Context
 {
     public function __construct()
     {
     }
     
+
     /**
      * @Given e-mail :arg1 and password :arg2
      */
@@ -82,4 +84,7 @@ class ContextAutorization implements SnippetAcceptingContext
     {
         throw new PendingException();
     }
+
+
+    
 }
