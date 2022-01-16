@@ -50,3 +50,10 @@
 
 # Embedded web-server pid file
 /.web-server-pid
+/.metadata/
+
+# CheckListApplication folders
+/CheckListApplication/node_modules
+
+# CheckListServer folders
+/CheckListServer/vendor
