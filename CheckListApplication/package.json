@@ -1,0 +1,18 @@
+{
+  "author": "������",
+  "name": "CheckListApplication",
+  "version": "0.0.0",
+  "description": "Check list application",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.2",
+    "twig": "^1.15.4"
+  },
+  "scripts": {
+    "run": "node server-start.js",
+    "start": "npx nodemon server-start.js -q --kill-others"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
