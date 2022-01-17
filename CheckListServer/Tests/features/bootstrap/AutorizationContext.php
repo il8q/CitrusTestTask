@@ -1,59 +1,98 @@
 <?php
-use Behat\Behat\Tester\Exception\PendingException;
+use function AutorizationContext\addToUserList;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
-use PHPUnit\Framework\Assert as Assert;
+use Behat\Behat\Tester\Exception\PendingException;
+use function PHPUnit\Framework\assertSame;
+use Src\DomainModel\AutorizationContext\AutorizationContextBuilder;
+use Src\DomainModel\AutorizationContext\RegestrationAgregate;
+use Src\DomainModel\AutorizationContext\RegistrationCheckAgregate;
+use Src\DomainModel\AutorizationContext\AutorizationCheckAgregate;
+use Src\DomainModel\AutorizationContext\User;
+use Src\DomainModel\UniversalContext\Constants;
 
 class AutorizationContext implements Context
 {
+
+    private AutorizationCheckAgregate $autorization;
+
+    private RegistrationCheckAgregate $regestrationCheck;
+
+    private RegestrationAgregate $regestration;
+
+    private AutorizationContextBuilder $builder;
+
+    private string $email;
+
+    private string $password;
+
+    private User $user;
+
     public function __construct()
     {
+        $this->builder = new AutorizationContextBuilder();
+        $this->autorization = $this->builder->buildAutorizationCheckAgregate();
+        $this->regestrationCheck = $this->builder->buildRegestrationCheckAgregate();
+        $this->regestration = $this->builder->buildRegestrationAgregate();
     }
-    
 
+    // Scenario: Guest can register and become a user
     /**
-     * @Given e-mail :arg1 and password :arg2
+     *
+     * @Given e-mail :email and password :password
      */
-    public function eMailAndPassword($arg1, $arg2)
+    public function eMailAndPassword(string $email, string $password)
     {
-        throw new PendingException();
+        $this->email = $email;
+        $this->password = $password;
     }
 
     /**
-     * @When e-mail and password not found in User list
+     *
+     * @When e-mail not found in User list
      */
-    public function eMailAndPasswordNotFoundInUserList()
+    public function emailNotFoundInUserList()
     {
-        throw new PendingException();
+        assertSame(false, $this->regestrationCheck->existUser($this->email));
     }
 
     /**
+     *
      * @Then create User with e-mail and password
      */
     public function createUserWithEMailAndPassword()
     {
-        throw new PendingException();
+        $this->user = $this->regestration->createUser($this->email, $this->password);
+        assertSame($this->email, $this->user->email);
+        assertSame($this->password, $this->user->password);
     }
 
     /**
+     *
      * @Then add to User list
      */
     public function addToUserList()
     {
-        throw new PendingException();
+        assertSame(
+            Constants::SUCCESS,
+            $this->regestration->addToUserList($this->user)
+        );
     }
 
     /**
-     * @Then guest transfer to :arg1
+     *
+     * @Then guest transfer to :page
      */
-    public function guestTransferTo($arg1)
+    public function guestTransferTo(string $page)
     {
-        throw new PendingException();
+        assertSame(
+            Constants::SUCCESS,
+            $this->regestration->transferUserTo($page)
+        );
     }
 
+    // Scenario: Guest can autorizate and transfer to "Main page"
     /**
+     *
      * @When e-mail found
      */
     public function eMailFound()
@@ -62,6 +101,7 @@ class AutorizationContext implements Context
     }
 
     /**
+     *
      * @When password equal password from User list
      */
     public function passwordEqualPasswordFromUserList()
@@ -70,6 +110,7 @@ class AutorizationContext implements Context
     }
 
     /**
+     *
      * @Then guest stand User
      */
     public function guestStandUser()
@@ -78,13 +119,11 @@ class AutorizationContext implements Context
     }
 
     /**
+     *
      * @Then User transfer to :arg1
      */
     public function userTransferTo($arg1)
     {
         throw new PendingException();
     }
-
-
-    
 }

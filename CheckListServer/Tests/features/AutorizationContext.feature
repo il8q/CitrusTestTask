@@ -3,7 +3,7 @@ Feature: Autorization context
 	
   Scenario: Guest can register and become a user
     Given e-mail "guestTest@gmail.com" and password "passwordTest1"
-    When e-mail and password not found in User list
+    When e-mail not found in User list
     Then create User with e-mail and password
     And add to User list
     And guest transfer to "Start page"
