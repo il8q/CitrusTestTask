@@ -20,6 +20,8 @@ Backend часть задания. Подробнее см. "Docs/Контейнеры.drawio"
 
 		composer.phar require --dev phpunit/phpunit
 		
+Создаём базу данных "checkListApplication" в PostgreSQL, так как проект работает со своей базой данных. Настройки соединения можно изменить в "Src/DomainModel/UniversalContext/DatabaseManager.php"
+		
 ## Тесты
 Тест кейсы сделаны на основе "Docs/Контексты DDD.drawio"
 
