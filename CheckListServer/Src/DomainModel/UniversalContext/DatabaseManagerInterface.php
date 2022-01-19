@@ -7,5 +7,6 @@ interface DatabaseManagerInterface
 {
     public function existUser(string $email): bool;
     public function addUser(User $user): bool;
+    public function getUser(string $email): array;  
 }
 

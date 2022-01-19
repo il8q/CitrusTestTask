@@ -43,29 +43,48 @@ class DatabaseManager implements DatabaseManagerInterface
         
     public function existUser(string $email): bool
     {
-        try {
-            DatabaseManager::executeQuery(
-                $this->connection,
-                DatabaseManager::generateSelectReqest(
-                    'User', ['email' => $email]
-                )
-            );
-            return true;
-        } catch (Exception $e) {
-            return false;
+        $sqlData = DatabaseManager::findUser($email);
+        $result = DatabaseManager::extractArrays($sqlData);
+        return count($result);
+    }
+    
+    private static function extractArrays($sqlData): array
+    {
+        $result = [];
+        while ($line = pg_fetch_array($sqlData, null, PGSQL_ASSOC)) {
+            $arr = [];
+            foreach ($line as $value) {
+                array_push($arr, $value);
+            }
+            array_push($result, $arr);
         }
+        return $result;
+    }
+    
+    private function findUser(string $email)
+    {
+        return DatabaseManager::executeQuery(
+            $this->connection,
+            DatabaseManager::generateSelectReqest(
+                'User', ['email' => $email]
+            )
+        );
     }
     
     public static function executeQuery($connection, string $query)
     {
-        return pg_query($connection, $query) or die('Error sql-request: ' . pg_last_error());
+        try {
+            return pg_query($connection, $query);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     
     private static function generateSelectReqest(string $where, array $what): string
     {
         return sprintf("SELECT * FROM public.\"%s\"
-            ORDER BY %s", $where, DatabaseManager::convertToListCreteria($what));
+            WHERE %s", $where, DatabaseManager::convertToListCreteria($what));
     }
     
     private static function convertToListCreteria(array $what): string
@@ -73,20 +92,20 @@ class DatabaseManager implements DatabaseManagerInterface
         $result = '';
         foreach ($what as $name => $value)
         {
-            $result = $result . sprintf('%s = %s,', $name, $value);
+            $result = $result . sprintf('%s = \'%s\',', $name, $value);
         }
         return substr($result, 0, -1);
     }
     
     public function addUser(User $user): bool
     {
-        return DatabaseManager::executeQuery(
-                $this->connection,
-                DatabaseManager::generateInsertReqest(
-                    'User', ['email' => $user->email, 'password' => $user->password]
-                )
-            );
-            
+         DatabaseManager::executeQuery(
+            $this->connection,
+            DatabaseManager::generateInsertReqest(
+                'User', ['email' => $user->email, 'password' => $user->password]
+            )
+         );
+         return true; 
     }
     
     private static function generateInsertReqest(string $where, array $what): string
@@ -118,6 +137,12 @@ class DatabaseManager implements DatabaseManagerInterface
             $result = $result . sprintf('\'%s\',', $value);
         }
         return substr($result, 0, -1);
+    }
+    
+    public function getUser(string $email): array
+    {
+        $sqlData = DatabaseManager::findUser($email);
+        return DatabaseManager::extractArrays($sqlData)[0];
     }
 }
 
