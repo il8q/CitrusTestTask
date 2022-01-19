@@ -1,20 +1,19 @@
 <?php
 namespace Src\DomainModel\AutorizationContext;
 
-use Src\DomainModel\UniversalContext\Constants;
-use Behat\Behat\Tester\Exception\PendingException;
-
+use Src\DomainModel\UniversalContext\DatabaseManagerInterface;
 
 
 class RegistrationCheckAgregate
 {
-
+    public DatabaseManagerInterface $database;
+    
     public function __construct()
     {}
     
     public function existUser(string $email): bool
     {
-        throw new PendingException();
+        return $this->database->existUser($email);
     }
 }
 

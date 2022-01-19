@@ -1,35 +1,35 @@
 <?php
-use function AutorizationContext\addToUserList;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use function PHPUnit\Framework\assertSame;
+use Src\DomainModel\AutorizationContext\AutorizationCheckAgregate;
 use Src\DomainModel\AutorizationContext\AutorizationContextBuilder;
 use Src\DomainModel\AutorizationContext\RegestrationAgregate;
 use Src\DomainModel\AutorizationContext\RegistrationCheckAgregate;
-use Src\DomainModel\AutorizationContext\AutorizationCheckAgregate;
 use Src\DomainModel\AutorizationContext\User;
 use Src\DomainModel\UniversalContext\Constants;
+use Src\DomainModel\UniversalContext\DatabaseManager;
+use Src\DomainModel\UniversalContext\DatabaseManagerInterface;
+
 
 class AutorizationContext implements Context
 {
 
     private AutorizationCheckAgregate $autorization;
-
     private RegistrationCheckAgregate $regestrationCheck;
-
     private RegestrationAgregate $regestration;
-
     private AutorizationContextBuilder $builder;
+    private DatabaseManagerInterface $database;
 
     private string $email;
-
     private string $password;
-
     private User $user;
 
     public function __construct()
     {
-        $this->builder = new AutorizationContextBuilder();
+        $this->database = new DatabaseManager(true);
+        $this->builder = new AutorizationContextBuilder($this->database);
+        
         $this->autorization = $this->builder->buildAutorizationCheckAgregate();
         $this->regestrationCheck = $this->builder->buildRegestrationCheckAgregate();
         $this->regestration = $this->builder->buildRegestrationAgregate();
@@ -84,10 +84,11 @@ class AutorizationContext implements Context
      */
     public function guestTransferTo(string $page)
     {
-        assertSame(
-            Constants::SUCCESS,
-            $this->regestration->transferUserTo($page)
-        );
+        /*
+         * DomainModelFacade call register() and if success,
+         * server transfer to :page. It simple because link 
+         * with server by use trait CanSent excessive
+         */
     }
 
     // Scenario: Guest can autorizate and transfer to "Main page"

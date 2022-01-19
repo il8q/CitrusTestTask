@@ -1,30 +1,26 @@
 <?php
 namespace Src\DomainModel\AutorizationContext;
 
-use Src\DomainModel\UniversalContext\Constants;
+use Src\DomainModel\UniversalContext\DatabaseManagerInterface;
 
 class RegestrationAgregate
 {
     public EntityFactory $entityFactory;
+    public DatabaseManagerInterface $database;
     
     public function __construct()
-    {}
+    {
+    }
     
     
     public function createUser(string $email, string $password): User
     {
-        return entityFactory.createUser($email, $password);
+        return $this->entityFactory->createUser($email, $password);
     }
     
     public function addToUserList(User $user): bool
     {
-        return Constants::FAIL;
-    }
-    
-    
-    public function transferUserTo(string $pageId): bool
-    {
-        return Constants::FAIL;
+        return $this->database->addUser($user);
     }
 }
 
