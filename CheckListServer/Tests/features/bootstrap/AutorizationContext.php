@@ -15,7 +15,7 @@ use Src\DomainModel\UniversalContext\DatabaseManagerInterface;
 class AutorizationContext implements Context
 {
 
-    private AutorizationCheckAgregate $autorization;
+    private AutorizationCheckAgregate $autorizationCheck;
     private RegistrationCheckAgregate $regestrationCheck;
     private RegestrationAgregate $regestration;
     private AutorizationContextBuilder $builder;
@@ -30,7 +30,7 @@ class AutorizationContext implements Context
         $this->database = new DatabaseManager(true);
         $this->builder = new AutorizationContextBuilder($this->database);
         
-        $this->autorization = $this->builder->buildAutorizationCheckAgregate();
+        $this->autorizationCheck = $this->builder->buildAutorizationCheckAgregate();
         $this->regestrationCheck = $this->builder->buildRegestrationCheckAgregate();
         $this->regestration = $this->builder->buildRegestrationAgregate();
     }
@@ -98,7 +98,7 @@ class AutorizationContext implements Context
      */
     public function eMailFound()
     {
-        throw new PendingException();
+        assertSame(true, $this->regestrationCheck->existUser($this->email));
     }
 
     /**
@@ -107,7 +107,7 @@ class AutorizationContext implements Context
      */
     public function passwordEqualPasswordFromUserList()
     {
-        throw new PendingException();
+        assertSame(true, $this->autorizationCheck->passwordEqual($this->email, $this->password));
     }
 
     /**
@@ -116,7 +116,9 @@ class AutorizationContext implements Context
      */
     public function guestStandUser()
     {
-        throw new PendingException();
+        /**
+         * Domain add userId(which autorizate) in return value 
+         */
     }
 
     /**
@@ -125,6 +127,10 @@ class AutorizationContext implements Context
      */
     public function userTransferTo($arg1)
     {
-        throw new PendingException();
+        /*
+         * DomainModelFacade call autorizate() and if success,
+         * server transfer to :page. It simple because link
+         * with server by use trait CanSent excessive.
+         */
     }
 }

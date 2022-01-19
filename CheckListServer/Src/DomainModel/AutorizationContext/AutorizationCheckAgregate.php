@@ -9,5 +9,11 @@ class AutorizationCheckAgregate
     public function __construct()
     {}
     
+    
+    
+    public function passwordEqual(string $email, string $password): bool
+    {
+        return false;
+    }
 }
 
