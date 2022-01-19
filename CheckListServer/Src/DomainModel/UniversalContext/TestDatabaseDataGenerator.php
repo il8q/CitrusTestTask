@@ -34,6 +34,7 @@ final class TestDatabaseDataGenerator
                 email character varying(100) COLLATE pg_catalog.\"default\",
                 password character varying(20) COLLATE pg_catalog.\"default\",
                 CONSTRAINT \"User_pkey\" PRIMARY KEY (id)
+                CONSTRAINT user_email UNIQUE (email)
             )"
         );
         DatabaseManager::executeQuery(

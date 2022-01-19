@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Src\DomainModel\DomainModelFacade;
+use Src\DomainModel\DomainModelFacadeBuilderDirector;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +15,28 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+$GLOBALS['domainModelIsInit'] = false;
+function initDomainIfNotInit()
+{
+    if (!$GLOBALS['domainModelIsInit']) {
+        $GLOBALS['domainModelIsInit'] = true;
+        $domainFacadeBuilder = new DomainModelFacadeBuilderDirector();
+        $GLOBALS['domain'] = $domainFacadeBuilder->create();
+    }
+}
+
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+    
+Route::get('/register', function (Request $request) {
+    initDomainIfNotInit();
+    $domain = $GLOBALS['domain'];
+    $message = $domain->register(
+        $request->query('email'), 
+        $request->query('password')
+    );
+    return $message;
 });
