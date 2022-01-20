@@ -8,7 +8,7 @@ final class DomainModelBuilderDirector
     private DomainModelBuilder $builder;
     public function __construct()
     {
-        $database = new DatabaseManager(false);
+        $database = DatabaseManager::getInstance(false);;
         $this->builder = new DomainModelBuilder($database);
     }
     

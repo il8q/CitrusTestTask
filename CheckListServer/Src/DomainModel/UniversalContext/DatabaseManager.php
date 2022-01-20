@@ -6,15 +6,16 @@ use Exception;
 
 class DatabaseManager implements DatabaseManagerInterface
 {
+    private static $instances = [];
+    
     private bool $runInTestMode;
     private $connection;
     
-    public function __construct(bool $runInTestMode)
-    {
+    protected function __construct(bool $runInTestMode) {
         $this->runInTestMode = $runInTestMode;
         
         /**
-         * The PHP extension will look for libpq.dll which is found of 
+         * The PHP extension will look for libpq.dll which is found of
          * your PostgreSQL installation. The simple fix is to add the
          *  path than contains that file to your environment PATH.
          * @var \Src\DomainModel\UniversalContext\DatabaseManager $connection
@@ -27,13 +28,26 @@ class DatabaseManager implements DatabaseManagerInterface
             user=postgres
             password=post"
             );
-            //or die('Fail connection: ' . pg_last_error());
+        //or die('Fail connection: ' . pg_last_error());
         
         if ($this->runInTestMode) {
+            //echo $exception->getMessage();
+            
             if (!TestDatabaseDataGenerator::existTestData($this->connection)) {
                 TestDatabaseDataGenerator::createTestData($this->connection);
             }
+            
         }
+    }
+    
+    public static function getInstance(bool $runInTestMode): DatabaseManager
+    {
+        $cls = static::class;
+        if (!isset(self::$instances[$cls])) {
+            self::$instances[$cls] = new static($runInTestMode);
+        }
+        
+        return self::$instances[$cls];
     }
     
     public function __destruct()
@@ -43,9 +57,14 @@ class DatabaseManager implements DatabaseManagerInterface
         
     public function existUser(string $email): bool
     {
-        $sqlData = DatabaseManager::findUser($email);
-        $result = DatabaseManager::extractArrays($sqlData);
-        return count($result);
+        try {
+            $sqlData = DatabaseManager::findUser($email);
+            $result = DatabaseManager::extractArrays($sqlData);
+            return count($result) > 0;
+        } catch (Exception $e) {
+            return false;
+        }
+        
     }
     
     private static function extractArrays($sqlData): array
@@ -74,7 +93,12 @@ class DatabaseManager implements DatabaseManagerInterface
     public static function executeQuery($connection, string $query)
     {
         try {
-            return pg_query($connection, $query);
+            $result = pg_query($connection, $query);
+            if (gettype($result) == 'boolean')
+            {
+                throw new Exception(pg_last_error());
+            }
+            return $result;
         } catch (Exception $e) {
             throw $e;
         }

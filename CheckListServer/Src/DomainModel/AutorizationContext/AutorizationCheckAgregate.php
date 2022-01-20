@@ -11,6 +11,7 @@ class AutorizationCheckAgregate
     
     public function passwordEqual(string $email, string $password): bool
     {
+        // TODO: need dictionary instead arrray
         $user = $this->database->getUser($email);
         return $user[2] == $password;
     }

@@ -6,7 +6,7 @@ final class SqlReqestGenerator
     public static function generateSelectReqest(string $where, array $what): string
     {
         return sprintf("SELECT * FROM public.\"%s\"
-            WHERE %s", $where, DatabaseManager::convertToListCreteria($what));
+            WHERE %s", $where, SqlReqestGenerator::convertToListCreteria($what));
     }
     
     private static function convertToListCreteria(array $what): string
@@ -24,9 +24,9 @@ final class SqlReqestGenerator
         return sprintf(
             "INSERT INTO public.\"%s\"(%s)
                 VALUES (%s)",
-            $where,
-            SqlReqestGenerator::extractKeys($what),
-            SqlReqestGenerator::extractValues($what)
+                $where,
+                SqlReqestGenerator::extractKeys($what),
+                SqlReqestGenerator::extractValues($what)
             );
     }
     

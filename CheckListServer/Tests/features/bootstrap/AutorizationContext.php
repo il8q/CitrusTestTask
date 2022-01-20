@@ -27,7 +27,7 @@ class AutorizationContext implements Context
 
     public function __construct()
     {
-        $this->database = new DatabaseManager(true);
+        $this->database = DatabaseManager::getInstance(true);
         $this->builder = new AutorizationContextBuilder($this->database);
         
         $this->autorizationCheck = $this->builder->buildAutorizationCheckAgregate();
