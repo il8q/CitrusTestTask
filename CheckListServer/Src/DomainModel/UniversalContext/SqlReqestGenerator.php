@@ -3,10 +3,33 @@ namespace Src\DomainModel\UniversalContext;
 
 final class SqlReqestGenerator
 {
-    public static function generateSelectReqest(string $where, array $what): string
+    public static function generateSelectReqest(
+        string $where,
+        array $whatFind = array(),
+        array $whatSelect = array()
+    ): string
     {
-        return sprintf("SELECT * FROM public.\"%s\"
-            WHERE %s", $where, SqlReqestGenerator::convertToListCreteria($what));
+        $selected = SqlReqestGenerator::generateWhatSelect($whatSelect);
+        if (count($whatFind)) {
+            return sprintf(
+                "SELECT %s FROM public.\"%s\" WHERE %s", 
+                $selected, $where, SqlReqestGenerator::convertToListCreteria($whatFind)
+            );
+        }
+
+        return sprintf(
+            "SELECT %s FROM public.\"%s\"",
+            $selected, $where
+        );
+    }
+    
+    private static function generateWhatSelect(array $whatSelect): string
+    {
+        $result = "*";
+        if (count($whatSelect)) {
+            $result = SqlReqestGenerator::extractValues($whatSelect, false);
+        }
+        return $result;
     }
     
     private static function convertToListCreteria(array $what): string
@@ -14,7 +37,12 @@ final class SqlReqestGenerator
         $result = '';
         foreach ($what as $name => $value)
         {
-            $result = $result . sprintf('%s = \'%s\',', $name, $value);
+            if (is_numeric($value)) {
+                $result = $result . sprintf('%s = %s,', $name, $value);
+            } else {
+                $result = $result . sprintf('%s = \'%s\',', $name, $value);
+            }
+            
         }
         return substr($result, 0, -1);
     }
@@ -40,12 +68,17 @@ final class SqlReqestGenerator
         return substr($result, 0, -1);
     }
     
-    private static function extractValues(array $what): string
+    private static function extractValues(array $what, bool $withQuotes = true): string
     {
         $result = '';
         foreach (array_values($what) as $value)
         {
-            $result = $result . sprintf('\'%s\',', $value);
+            if ($withQuotes) {
+                $result = $result . sprintf('\'%s\',', $value);
+            } else {
+                $result = $result . sprintf('%s,', $value);
+            }
+            
         }
         return substr($result, 0, -1);
     }

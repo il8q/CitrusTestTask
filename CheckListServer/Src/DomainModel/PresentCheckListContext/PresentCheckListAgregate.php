@@ -13,7 +13,12 @@ class PresentCheckListAgregate
     
     public function getCheckListSInShortForm(): array
     {
-        return [];
+        return $this->database->getCheckLists();
+    }
+    
+    public function getPoints(int $checkListId): array
+    {
+        return $this->database->getPoints($checkListId);
     }
 }
 

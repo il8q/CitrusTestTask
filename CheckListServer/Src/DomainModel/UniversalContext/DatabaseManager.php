@@ -3,6 +3,7 @@ namespace Src\DomainModel\UniversalContext;
 
 use Src\DomainModel\AutorizationContext\User;
 use Exception;
+use Behat\Testwork\Specification\SpecificationArrayIterator;
 
 class DatabaseManager implements DatabaseManagerInterface
 {
@@ -13,14 +14,7 @@ class DatabaseManager implements DatabaseManagerInterface
     
     protected function __construct(bool $runInTestMode) {
         $this->runInTestMode = $runInTestMode;
-        
-        /**
-         * The PHP extension will look for libpq.dll which is found of
-         * your PostgreSQL installation. The simple fix is to add the
-         *  path than contains that file to your environment PATH.
-         * @var \Src\DomainModel\UniversalContext\DatabaseManager $connection
-         */
-        
+
         $this->connection = pg_connect(
             "host=localhost
             port=5432
@@ -31,8 +25,6 @@ class DatabaseManager implements DatabaseManagerInterface
         //or die('Fail connection: ' . pg_last_error());
         
         if ($this->runInTestMode) {
-            //echo $exception->getMessage();
-            
             if (!TestDatabaseDataGenerator::existTestData($this->connection)) {
                 TestDatabaseDataGenerator::createTestData($this->connection);
             }
@@ -70,13 +62,18 @@ class DatabaseManager implements DatabaseManagerInterface
     private static function extractArrays($sqlData): array
     {
         $result = [];
-        while ($line = pg_fetch_array($sqlData, null, PGSQL_ASSOC)) {
+        
+        $object = pg_fetch_all($sqlData);
+        foreach($object as $key=>$value){
             $arr = [];
-            foreach ($line as $value) {
-                array_push($arr, $value);
+            foreach ($value as $value2) {
+                
+                array_push($arr, $value2);
             }
             array_push($result, $arr);
         }
+
+        
         return $result;
     }
     
@@ -85,7 +82,7 @@ class DatabaseManager implements DatabaseManagerInterface
         return DatabaseManager::executeQuery(
             $this->connection,
             SqlReqestGenerator::generateSelectReqest(
-                'User', ['email' => $email]
+                'User', ['email' => $email], array()
             )
         );
     }
@@ -119,6 +116,66 @@ class DatabaseManager implements DatabaseManagerInterface
     {
         $sqlData = DatabaseManager::findUser($email);
         return DatabaseManager::extractArrays($sqlData)[0];
+    }
+    
+    public function getCheckLists(): array
+    {
+        $sqlData = DatabaseManager::executeQuery(
+            $this->connection,
+            SqlReqestGenerator::generateSelectReqest(
+                'CheckList', 
+                array(), 
+                DatabaseManager::generateWhatSelect(false)
+            )
+        );
+
+        return DatabaseManager::extractArrays($sqlData);
+    }
+    
+    private static function generateWhatSelect(bool $getWithPoints): array
+    {
+        $result = array();
+        if (!$getWithPoints) {
+            $result = [ 'id', 'title', 'definition' ];
+        }
+        return $result;
+    }
+    
+    public function getPoints(int $checkListId): array
+    {
+        $checkList = DatabaseManager::findCheckList($this->connection, $checkListId);
+        $result = $this->foundPoints(preg_split("/[\s,]+/", substr($checkList[0][3], 1, -1)));
+        return $result;
+    }
+    
+    private static function findCheckList($connection, int $checkListId): array
+    {
+        $sqlData = DatabaseManager::executeQuery(
+            $connection,
+            SqlReqestGenerator::generateSelectReqest(
+                'CheckList',
+                ['id' => $checkListId],
+                DatabaseManager::generateWhatSelect(true)
+            )
+        );
+        return DatabaseManager::extractArrays($sqlData);
+    }
+    
+    private function foundPoints(array $pointIds): array
+    {
+        $result = [];
+        for ($i = 0; $i < count($pointIds); $i++) {
+            $sqlData = DatabaseManager::executeQuery(
+                $this->connection,
+                SqlReqestGenerator::generateSelectReqest(
+                    'Point',
+                    ['id' => $pointIds[$i]]
+                )
+            );
+            array_push($result, DatabaseManager::extractArrays($sqlData));
+            $result[$i] = $result[$i][0];
+        }
+        return $result;
     }
 }
 

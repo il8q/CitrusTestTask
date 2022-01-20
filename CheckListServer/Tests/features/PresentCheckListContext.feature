@@ -4,8 +4,8 @@ Feature: PresentCheckList context
   Scenario: User open "Main page" and see "Check list"s
     When "Main page" is opening
     Then send "Check list"s in short form
-    And in the form content "title", "description", "id"
+    And in the form content "id", "title", "description"
 
   Scenario: User unwrap check "Check list"
-    Given "id" from "Check list"
-    Then send "point"s from "Check list"
+    Given check list id="0"
+    Then send points from check list
