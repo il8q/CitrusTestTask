@@ -81,7 +81,6 @@ class PresentCheckListContext implements Context
     {
         $this->sendPoints = $this->presentCheckListAgregate->getPoints($this->checkListId);
 
-        echo print_r($this->sendPoints);
         assertSame('0', $this->sendPoints[0][0]);
         assertSame('I must something do', $this->sendPoints[0][1]);
         assertSame('Just print text', $this->sendPoints[0][2]);
