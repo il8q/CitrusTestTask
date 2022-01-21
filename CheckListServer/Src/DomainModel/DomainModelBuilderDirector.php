@@ -15,6 +15,8 @@ final class DomainModelBuilderDirector
     public function create(): DomainModel {
         $result = $this->builder->createDomainModel();
         $result->autorizationContext = $this->builder->createAutorizationContext();
+        $result->presentCheckListContext = $this->builder->createPresentCheckListContext();
+        
         return $result;
     }
 }

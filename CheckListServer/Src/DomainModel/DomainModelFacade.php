@@ -15,5 +15,15 @@ final class DomainModelFacade
     {
         return $this->domain->register($email, $password);
     }
+    
+    public function getCheckListsInShortForm(): array
+    {
+        return $this->domain->getCheckListsInShortForm();
+    }
+    
+    public function getPoints(int $checkListId): array
+    {
+        return $this->domain->getPoints($checkListId);
+    }
 }
 

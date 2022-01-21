@@ -12,7 +12,7 @@ class PresentCheckListContextBuilder
         $this->database = $database;
     }
     
-    public function createPresentCheckListContext(): PresentCheckListContext
+    public function createContext(): PresentCheckListContext
     {
         return new PresentCheckListContext();
     }

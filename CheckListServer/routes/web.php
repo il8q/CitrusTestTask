@@ -16,13 +16,14 @@ use Src\DomainModel\DomainModelFacadeBuilderDirector;
 |
 */
 $GLOBALS['domainModelIsInit'] = false;
-function initDomainIfNotInit()
+function getDomainInstance()
 {
     if (!$GLOBALS['domainModelIsInit']) {
         $GLOBALS['domainModelIsInit'] = true;
         $domainFacadeBuilder = new DomainModelFacadeBuilderDirector();
         $GLOBALS['domain'] = $domainFacadeBuilder->create();
     }
+    return $GLOBALS['domain'];
 }
 
 
@@ -32,11 +33,23 @@ Route::get('/', function () {
 
     
 Route::get('/register', function (Request $request) {
-    initDomainIfNotInit();
-    $domain = $GLOBALS['domain'];
-    $message = $domain->register(
+    $domain = getDomainInstance();
+    $response = $domain->register(
         $request->query('email'), 
         $request->query('password')
     );
-    return $message;
+    return $response;
+});
+  
+Route::get('/get-check-lists', function (Request $request) {
+    $domain = getDomainInstance();
+    $response = $domain->getCheckListsInShortForm();
+    return $response;
+});
+    
+Route::get('/get-points', function (Request $request) {
+    $domain = getDomainInstance();
+    $checkListId = intval($request->query('check-list-id'));
+    $response = $domain->getPoints($checkListId);
+    return $response;
 });
