@@ -4,6 +4,8 @@
 	    <title>{% block title %}{% endblock %}</title>
 	    {% include "cssCommon.twig" %}
 	    {% include "jsCommon.twig" %}
+	    
+	    {% block css %}{% endblock %}
 	</head>
 	<body>
 	    {% block body %}{% endblock %}

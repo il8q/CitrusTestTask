@@ -1,0 +1,19 @@
+.border
+{
+    border: 1px solid #000000;
+}
+
+.center-align
+{
+    text-align: center;
+}
+
+.hide-element
+{
+    height: 0px;
+}
+
+.list-style-type_none
+{
+    list-style-type: none;
+}
