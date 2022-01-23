@@ -31,6 +31,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/autorizate', function (Request $request) {
+    $domain = getDomainInstance();
+    $response = $domain->autorizate(
+        $request->query('email'),
+        $request->query('password')
+    );
+    return $response;
+});
     
 Route::get('/register', function (Request $request) {
     $domain = getDomainInstance();

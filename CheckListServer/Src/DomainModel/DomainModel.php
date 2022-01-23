@@ -14,10 +14,20 @@ final class DomainModel
         
     }
     
+    public function autorizate(string $email, string $password): array
+    {
+        try {
+            $this->autorizationContext->checkUserDataForAutorization($email, $password);
+            return ['command' => 'transfer to main page'];
+        } catch (Exception $e) {
+            return ['error_message' => $e->getMessage()];
+        }
+    }
+    
     public function register(string $email, string $password): array
     {
         try {
-            $this->autorizationContext->checkUserData($email);
+            $this->autorizationContext->checkUserDataForRegistration($email);
             $this->autorizationContext->registerUser($email, $password);
             return ['command' => 'transfer to start page'];
         } catch (Exception $e) {

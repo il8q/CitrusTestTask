@@ -15,6 +15,16 @@ class AutorizationContext
     {
     }
     
+    public function checkUserDataForAutorization(string $email, string $password)
+    {
+        if (!$this->regestrationCheck->existUser($email)) {
+            throw new Exception(sprintf('User with e-mail %s not exist', $email));
+        };
+        if (!$this->autorization->passwordEqual($email, $password)) {
+            throw new Exception('Password incorrct');
+        };
+    }
+    
     public function checkUserDataForRegistration(string $email)
     {
         // TODO: not check email correctness
@@ -27,13 +37,6 @@ class AutorizationContext
     {
         $user = $this->regestration->createUser($email, $password);
         $this->regestration->addToUserList($user);
-    }
-    
-    public function checkUserDataForAutorization(string $email, string $password)
-    {
-        if (!$this->regestrationCheck->existUser($email)) {
-            throw new Exception(sprintf('User with e-mail %s not exist', $email));
-        }
     }
 }
 

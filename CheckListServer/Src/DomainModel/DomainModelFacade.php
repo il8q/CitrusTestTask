@@ -11,7 +11,12 @@ final class DomainModelFacade
         $this->domain = $domainModel;
     }
     
-    public function register(string $email, string $password): string
+    public function autorizate(string $email, string $password): array
+    {
+        return $this->domain->autorizate($email, $password);
+    }
+    
+    public function register(string $email, string $password): array
     {
         return $this->domain->register($email, $password);
     }
