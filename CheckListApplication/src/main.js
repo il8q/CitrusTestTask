@@ -5,21 +5,23 @@ import store from "./store";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "https://gabbyblog.herokuapp.com/";
+axios.defaults.baseURL = 'http://localhost:8000/';
+axios.defaults.headers.common['Content-Type'] ='application/json;charset=utf-8';
+axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, access-control-allow-origin';
+axios.defaults.withCredentials = false;
+axios.defaults.headers.common['X-CSRF-TOKEN'] = 'token';
 
 axios.interceptors.response.use(undefined, function(error) {
   if (error) {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+     if ((error.response.status === 401) && (!originalRequest._retry)) {
       originalRequest._retry = true;
       store.dispatch("LogOut");
-      return router.push("/login");
-    }
+      return router.push("/");
+     }
   }
 });
-
-Vue.config.productionTip = false;
-
+  
 new Vue({
   store,
   router,

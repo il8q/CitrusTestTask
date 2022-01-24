@@ -3,16 +3,17 @@
     <div>
       <form @submit.prevent="submit">
         <div>
-          <label for="username">Username:</label>
-          <input type="text" name="username" v-model="form.username" />
+          <label for="email">Email:</label>
+          <input type="text" name="email" v-model="form.email" />
         </div>
         <div>
           <label for="password">Password:</label>
           <input type="password" name="password" v-model="form.password" />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" @click="submit">LogIn</button>
+        <button type="submit" @click="register">Register</button>
       </form>
-      <p v-if="showError" id="error">Username or Password is incorrect</p>
+      <p v-if="showError" id="error">{{ }}</p>
     </div>
   </div>
 </template>
@@ -26,25 +27,28 @@ export default {
   data() {
     return {
       form: {
-        username: "",
+        email: "",
         password: "",
       },
-      showError: false
+      showError: ""
     };
   },
   methods: {
     ...mapActions(["LogIn"]),
     async submit() {
       const User = new FormData();
-      User.append("username", this.form.username);
+      User.append("email", this.form.email);
       User.append("password", this.form.password);
       try {
           await this.LogIn(User);
-          this.$router.push("/posts");
-          this.showError = false
+          this.$router.push("/main");
+          this.showError = "";
       } catch (error) {
-        this.showError = true
+        this.showError = error.response;
       }
+    },
+    async register () {
+      this.$router.push("/register");
     },
   },
 };
@@ -76,7 +80,7 @@ input {
   margin: 5px;
   box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
   padding: 10px;
-  border-radius: 30px;
+  border-radius: 5px;
 }
 #error {
   color: red;

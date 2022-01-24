@@ -1,8 +1,9 @@
 import axios from "axios";
+//import sprintf from "sprintf-js";
 
 const state = {
   user: null,
-  posts: null,
+  checkLists: null,
 };
 
 const getters = {
@@ -15,24 +16,37 @@ const actions = {
   async Register({dispatch}, form) {
     await axios.post('register', form)
     let UserForm = new FormData()
-    UserForm.append('username', form.username)
+    UserForm.append('email', form.email)
     UserForm.append('password', form.password)
     await dispatch('LogIn', UserForm)
   },
 
   async LogIn({commit}, user) {
-    await axios.post("login", user);
-    await commit("setUser", user.get("username"));
+    try {
+      await axios.post('autorizate', 
+      {
+        email: user.get("email"),
+        password: user.get("password")
+      });
+    } catch(e) {
+      console.log(e);
+    }
+    let response = await axios.post('autorizate', 
+      {
+        email: user.get("email"),
+        password: user.get("password")
+      });
+    //let response = await axios.get("autorizate", param: {user.get("email")});
+    console.log(response);
+    if (response.data['command'] === "transfer to main page")
+    {
+      await commit("autorizate", user.get("email"));
+    }
   },
 
-  async CreatePost({ dispatch }, post) {
-    await axios.post("post", post);
-    return await dispatch("GetPosts");
-  },
-
-  async GetPosts({ commit }) {
-    let response = await axios.get("posts");
-    commit("setPosts", response.data);
+  async GetCheckLists({ commit }) {
+    let response = await axios.get("get-check-lists");
+    commit("setCheckLists", response.data);
   },
 
   async LogOut({ commit }) {
@@ -42,12 +56,11 @@ const actions = {
 };
 
 const mutations = {
-  setUser(state, username) {
-    state.user = username;
+  autorizate(state, email) {
+    state.user = email;
   },
-
-  setPosts(state, posts) {
-    state.posts = posts;
+  setCheckLists(state, lists) {
+    state.checkLists = lists;
   },
   logout(state, user) {
     state.user = user;
