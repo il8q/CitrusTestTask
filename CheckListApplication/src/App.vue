@@ -8,6 +8,7 @@
 <script>
 // @ is an alias to /src
 import NavBar from "@/components/NavBar.vue";
+window.csrf_token = "{{ csrf_token() }}";
 
 export default {
   components: {

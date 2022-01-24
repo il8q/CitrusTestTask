@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "../store";
 
 import Register from "../views/Register";
 import Login from "../views/Login";
@@ -35,29 +34,5 @@ const router = new VueRouter({
   routes,
 });
 
-// TODO вынести в отдельный класс
-router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (store.getters.isAuthenticated) {
-      next();
-      return;
-    }
-    next("/");
-  } else {
-    next();
-  }
-});
-// TODO вынести в отдельный класс
-router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.guest)) {
-    if (store.getters.isAuthenticated) {
-      next("/main");
-      return;
-    }
-    next();
-  } else {
-    next();
-  }
-});
 
 export default router;

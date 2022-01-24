@@ -9,7 +9,10 @@ axios.defaults.baseURL = 'http://localhost:8000/';
 axios.defaults.headers.common['Content-Type'] ='application/json;charset=utf-8';
 axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, access-control-allow-origin';
 axios.defaults.withCredentials = false;
-axios.defaults.headers.common['X-CSRF-TOKEN'] = 'token';
+axios.defaults.headers.common = {
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-CSRF-TOKEN': window.csrf_token
+};
 
 axios.interceptors.response.use(undefined, function(error) {
   if (error) {
@@ -21,7 +24,8 @@ axios.interceptors.response.use(undefined, function(error) {
      }
   }
 });
-  
+
+
 new Vue({
   store,
   router,

@@ -22,22 +22,11 @@ const actions = {
   },
 
   async LogIn({commit}, user) {
-    try {
-      await axios.post('autorizate', 
-      {
-        email: user.get("email"),
-        password: user.get("password")
-      });
-    } catch(e) {
-      console.log(e);
-    }
     let response = await axios.post('autorizate', 
       {
         email: user.get("email"),
         password: user.get("password")
       });
-    //let response = await axios.get("autorizate", param: {user.get("email")});
-    console.log(response);
     if (response.data['command'] === "transfer to main page")
     {
       await commit("autorizate", user.get("email"));
