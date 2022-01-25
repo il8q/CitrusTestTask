@@ -1,24 +1,34 @@
 <template>
   <div class="container">
-    <div class="checkLists" v-if="CheckLists">
-      <ul>
+    <div class="check-lists li-without-points" v-if="CheckLists">
+      
         <li v-for="checkList in CheckLists" :key="checkList.id">
-          <div id="checkList-div">
-            <p><b>{{ checkList[1] }}</b></p>
-            <button @click ="showDetail(checkList[0])">+</button>
-            <p>{{ checkList[2] }}</p>
-
+          <div id="check-list">
+          <ul class="li-without-points p-l-0">
+            <li>
+              <div class="check-list_title element-margin"><b>{{ checkList[1] }}</b></div>
+              <div class="check-list_discription element-margin">{{ checkList[2] }}</div>
+            </li>
+            <li class="detail-button-container">
+              <button
+                class="detail-button"
+                @click ="showDetail(checkList[0])">
+                +
+              </button>
+            </li>
+          </ul>
+            
+            
             <transition name="fade">
               <div v-if="checkListDetailsShow[checkList[0]]">
                 <div v-for="detail in checkListDetails[checkList[0]]"  v-bind:key="detail[0]">
-                  <p><b>{{ detail[1] }}</b></p>
-                  <p>{{ detail[2] }}</p>
+                  <div class="point_title element-margin">{{ detail[1] }}</div>
                 </div>
               </div>
             </transition>
           </div>
         </li>
-      </ul>
+      
     </div>
     <div v-else>No check lists</div>
   </div>
@@ -101,15 +111,45 @@ input {
   padding: 10px;
   border-radius: 30px;
 }
-ul {
+
+.li-without-points {
   list-style: none;
 }
 
+.element-margin {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.p-l-0 {
+  padding-left: 0px;
+}
+
 #check-list {
-  border: 3px solid #000;
-  width: 500px;
+  width: 50%;
+  min-width: 300px;
   margin: auto;
   margin-bottom: 5px;
+  border-radius: 30px;
+  background-color: #0e0a0e29;
+  padding: 5px;
+}
+
+.detail-button-container {
+  text-align: right;
+  width: 50px;
+  margin-left: auto;
+  margin-right: 5px;
+}
+
+.detail-button {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.point_title {
+  text-align: left;
+  padding-left: 10px;
 }
 
 .fade-enter-active, .fade-leave-active {
