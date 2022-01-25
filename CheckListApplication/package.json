@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "cookie": "^0.4.1",
     "core-js": "^3.6.5",
     "sprintf-js": "^1.1.2",
     "vue": "^2.6.11",
