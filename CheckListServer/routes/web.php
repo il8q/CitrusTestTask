@@ -15,6 +15,7 @@ use Src\DomainModel\DomainModelFacadeBuilderDirector;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 $GLOBALS['domainModelIsInit'] = false;
 function getDomainInstance()
 {
@@ -31,33 +32,33 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/autorizate', function (Request $request) {
+Route::post('/autorizate', function (Request $request) {
     $domain = getDomainInstance();
     $response = $domain->autorizate(
-        $request->query('email'),
-        $request->query('password')
+        $request->input('email'),
+        $request->input('password')
     );
-    return $response;
+    return Response::json($response, 200);
 });
     
-Route::get('/register', function (Request $request) {
+Route::post('/register', function (Request $request) {
     $domain = getDomainInstance();
     $response = $domain->register(
-        $request->query('email'), 
-        $request->query('password')
+        $request->input['email'],
+        $request->input['password']
     );
-    return $response;
+    return Response::json($response, 200);
 });
   
 Route::get('/get-check-lists', function (Request $request) {
     $domain = getDomainInstance();
     $response = $domain->getCheckListsInShortForm();
-    return $response;
+    return Response::json($response, 200);
 });
     
 Route::get('/get-points', function (Request $request) {
     $domain = getDomainInstance();
     $checkListId = intval($request->query('check-list-id'));
     $response = $domain->getPoints($checkListId);
-    return $response;
+    return Response::json($response, 200);
 });
