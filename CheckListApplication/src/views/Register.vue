@@ -41,7 +41,6 @@ export default {
         this.$router.push("/posts");
         this.showError = "";
       } catch (error) {
-      console.log(error);
         this.showError = error.response;
       }
     },

@@ -1,15 +1,18 @@
 import axios from "axios";
-//import sprintf from "sprintf-js";
 
 const state = {
   user: null,
   checkLists: null,
+  checkListDetails: {},
+  checkListDetailsShow: {},
 };
 
 const getters = {
   isAuthenticated: (state) => !!state.user,
-  StatePosts: (state) => state.posts,
+  StateCheckLists: (state) => state.checkLists,
   StateUser: (state) => state.user,
+  checkListDetails: (state) => state.checkListDetails,
+  checkListDetailsShow: (state) => state.checkListDetailsShow,
 };
 
 const actions = {
@@ -32,12 +35,17 @@ const actions = {
       await commit("autorizate", user.get("email"));
     }
   },
-
-  async GetCheckLists({ commit }) {
+  async loadCheckLists({ commit }) {
     let response = await axios.get("get-check-lists");
     commit("setCheckLists", response.data);
   },
-
+  async resetCheckLists({ commit }) {
+    commit("resetCheckLists");
+  },
+  async setCheckListDetail({ commit }, id) {
+    let response = await axios.get("get-points?check-list-id=" + id);
+    commit("setCheckListDetail", {id: id, details: response.data});
+  },
   async LogOut({ commit }) {
     let user = null;
     commit("logout", user);
@@ -50,6 +58,15 @@ const mutations = {
   },
   setCheckLists(state, lists) {
     state.checkLists = lists;
+  },
+  resetCheckLists(state) {
+    state.checkLists = null;
+    state.checkListDetails = {};
+    state.checkListDetailsShow = {};
+  },
+  setCheckListDetail(state, data) {
+    state.checkListDetails[data.id]=  data.details;
+    state.checkListDetailsShow[data.id] = true;
   },
   logout(state, user) {
     state.user = user;

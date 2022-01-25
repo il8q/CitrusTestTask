@@ -1,11 +1,21 @@
 <template>
   <div class="container">
-    <div class="check-lists" v-if="CheckLists">
+    <div class="checkLists" v-if="CheckLists">
       <ul>
         <li v-for="checkList in CheckLists" :key="checkList.id">
-          <div id="check-list">
-            <p><b>{{ checkList.title }}</b></p>
-            <p>{{ checkList.description }}</p>
+          <div id="checkList-div">
+            <p><b>{{ checkList[1] }}</b></p>
+            <a @click="showDetail(checkList[0])">+</a>
+            <p>{{ checkList[2] }}</p>
+
+            <transition name="check-list-detail">
+              <div v-if="checkListDetailsShow[checkList[0]]">
+                <div v-for="detail in checkListDetails[checkList[0]]"  v-bind:key="detail[0]">
+                  <p><b>{{ detail[1] }}</b></p>
+                  <p>{{ detail[2] }}</p>
+                </div>
+              </div>
+            </transition>
           </div>
         </li>
       </ul>
@@ -15,25 +25,37 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "CheckList",
+  name: "CheckLists",
   components: {},
-  data() {
-    return {
-      checkList: {
-        title: "",
-        description: "",
-      },
-    };
-  },
   created: function() {
-    // a function to call getposts action
-    this.GetCheckLists()
+    this.resetCheckLists();
+    this.loadCheckLists();
   },
   computed: {
-    ...mapGetters({ Posts: "StatePosts", User: "StateUser" }),
+    ...mapGetters({ 
+      CheckLists: "StateCheckLists", 
+      User: "StateUser",
+      checkListDetails: "checkListDetails",
+      checkListDetailsShow: "checkListDetailsShow", 
+    }),
+  },
+  methods: {
+    ...mapActions([
+      "resetCheckLists", 
+      "loadCheckLists",
+      "setCheckListDetail"
+     ]),
+     async showDetail(checkListId) {
+      try {
+        await this.setCheckListDetail(checkListId);
+        await this.$forceUpdate();
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
