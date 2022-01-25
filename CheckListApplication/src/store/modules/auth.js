@@ -42,6 +42,9 @@ const actions = {
   async resetCheckLists({ commit }) {
     commit("resetCheckLists");
   },
+  async closeCheckListPoints({ commit }, id) {
+    commit("closeCheckListPoints", id);
+  },
   async setCheckListDetail({ commit }, id) {
     let response = await axios.get("get-points?check-list-id=" + id);
     commit("setCheckListDetail", {id: id, details: response.data});
@@ -67,6 +70,9 @@ const mutations = {
   setCheckListDetail(state, data) {
     state.checkListDetails[data.id]=  data.details;
     state.checkListDetailsShow[data.id] = true;
+  },
+  closeCheckListPoints(state, checkListId) {
+    state.checkListDetailsShow[checkListId] = false;
   },
   logout(state, user) {
     state.user = user;

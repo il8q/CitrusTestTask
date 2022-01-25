@@ -24,7 +24,7 @@ axios.interceptors.response.use(undefined, function(error) {
      }
   }
 });
-
+Vue.config.productionTip = false;
 
 new Vue({
   store,

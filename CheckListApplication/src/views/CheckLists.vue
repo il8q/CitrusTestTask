@@ -5,10 +5,10 @@
         <li v-for="checkList in CheckLists" :key="checkList.id">
           <div id="checkList-div">
             <p><b>{{ checkList[1] }}</b></p>
-            <a @click="showDetail(checkList[0])">+</a>
+            <button @click ="showDetail(checkList[0])">+</button>
             <p>{{ checkList[2] }}</p>
 
-            <transition name="check-list-detail">
+            <transition name="fade">
               <div v-if="checkListDetailsShow[checkList[0]]">
                 <div v-for="detail in checkListDetails[checkList[0]]"  v-bind:key="detail[0]">
                   <p><b>{{ detail[1] }}</b></p>
@@ -46,11 +46,22 @@ export default {
     ...mapActions([
       "resetCheckLists", 
       "loadCheckLists",
-      "setCheckListDetail"
+      "setCheckListDetail",
+      "closeCheckListPoints",
      ]),
      async showDetail(checkListId) {
       try {
-        await this.setCheckListDetail(checkListId);
+        const showList = this.$store.state.auth.checkListDetailsShow;
+        
+        if (showList === {}) {
+          await this.closeCheckListPoints(checkListId);
+        } else {
+          if (showList[checkListId]) {
+            await this.closeCheckListPoints(checkListId);
+          }
+          await this.setCheckListDetail(checkListId);
+        }
+         
         await this.$forceUpdate();
       } catch (error) {
         console.log(error);
@@ -99,5 +110,12 @@ ul {
   width: 500px;
   margin: auto;
   margin-bottom: 5px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+  opacity: 0;
 }
 </style>
