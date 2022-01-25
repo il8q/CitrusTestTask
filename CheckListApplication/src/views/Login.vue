@@ -1,49 +1,47 @@
 <template>
   <div class="login">
-    <div>
-      <form @submit.prevent="submit">
-        <div class="field-container to-center">
-          <div class="field-container m-tb-5">
-            <div class="field-name inline-block on-left-side m-r-0" for="email">
-              Email:
-            </div>
-            <div class="inline-block on-right-side">
-              <input 
-                type="text" 
-                name="email"
-                v-model="form.email" 
-               />
-            </div>
+    <p v-if="showError" id="error">Username or Password is incorrect</p>
+    <form @submit.prevent="submit">
+      <div class="field-container to-center">
+        <div class="field-container m-tb-5">
+          <div class="field-name inline-block on-left-side m-r-0" for="email">
+            Email:
           </div>
-          
-          <div class="field-container m-tb-5">
-            <div class="field-name inline-block on-left-side m-r-0" for="password">
-              Password:
-            </div>
-            <div class="inline-block on-right-side">
-              <input 
-                 type="password" 
-                 name="password"
-                 v-model="form.password"
-               />
-            </div>
-            
+          <div class="inline-block on-right-side">
+            <input 
+              type="text" 
+              name="email"
+              v-model="form.email" 
+             />
           </div>
         </div>
         
-        <button 
-          class="m-lr-5" 
-          type="submit" 
-          @click.prevent="submit"
-        >LogIn</button>
-        <button 
-          class="m-lr-5"
-          type="submit"
-          @click.prevent="register"
-         >Register</button>
-      </form>
-      <p v-if="showError" id="error">{{ }}</p>
-    </div>
+        <div class="field-container m-tb-5">
+          <div class="field-name inline-block on-left-side m-r-0" for="password">
+            Password:
+          </div>
+          <div class="inline-block on-right-side">
+            <input 
+               type="password" 
+               name="password"
+               v-model="form.password"
+             />
+          </div>
+          
+        </div>
+      </div>
+      
+      <button 
+        class="m-lr-5" 
+        type="submit" 
+        @click.prevent="submit"
+      >LogIn</button>
+      <button 
+        class="m-lr-5"
+        type="submit"
+        @click.prevent="register"
+       >Register</button>
+    </form>
   </div>
 </template>
 
@@ -59,7 +57,7 @@ export default {
         email: "",
         password: "",
       },
-      showError: ""
+      showError: false
     };
   },
   methods: {
@@ -71,9 +69,9 @@ export default {
       try {
           await this.LogIn(User);
           this.$router.push("/main");
-          this.showError = "";
+          this.showError = false;
       } catch (error) {
-        this.showError = error.response;
+        this.showError = true
       }
     },
     async register () {

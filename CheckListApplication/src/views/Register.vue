@@ -2,6 +2,7 @@
   <div class="register">
     <div>
       <form @submit.prevent="submit">
+        <p v-if="showError" id="error">Username already exists</p>
         <div class="field-container to-center m-tb-5">
           <div class="field-name inline-block on-left-side m-r-0" for="email">
               Email:
@@ -29,7 +30,6 @@
         <button type="submit">Submit</button>
       </form>
     </div>
-    <p v-if="showError" id="error">{{ showError }}</p>
   </div>
 </template>
 
@@ -43,10 +43,9 @@ export default {
     return {
       form: {
         username: "",
-        full_name: "",
         password: "",
       },
-      showError: ""
+      showError: false
     };
   },
   methods: {
@@ -55,9 +54,9 @@ export default {
       try {
         await this.Register(this.form);
         this.$router.push("/main");
-        this.showError = "";
+        this.showError = false
       } catch (error) {
-        this.showError = error.response;
+        this.showError = true
       }
     },
   },
