@@ -7,12 +7,12 @@
           <ul class="li-without-points p-l-0">
             <li>
               <div class="check-list_title element-margin"><b>{{ checkList[1] }}</b></div>
-              <div class="check-list_discription element-margin">{{ checkList[2] }}</div>
+              <div class="check-list_discription element-margin" v-html="checkList[2]"></div>
             </li>
             <li class="detail-button-container">
               <button
                 class="detail-button"
-                @click ="showDetail(checkList[0])">
+                @click.prevent ="showDetail(checkList[0])">
                 +
               </button>
             </li>
@@ -22,7 +22,8 @@
             <transition name="fade">
               <div v-if="checkListDetailsShow[checkList[0]]">
                 <div v-for="detail in checkListDetails[checkList[0]]"  v-bind:key="detail[0]">
-                  <div class="point_title element-margin">{{ detail[1] }}</div>
+                  <div class="point_title detail-element element-margin"><b>{{ detail[1] }}</b></div>
+                  <div class="point_description detail-element element-margin" v-html="detail[2]"></div>
                 </div>
               </div>
             </transition>
@@ -147,7 +148,7 @@ input {
   margin-right: 5px;
 }
 
-.point_title {
+.detail-element {
   text-align: left;
   padding-left: 10px;
 }
