@@ -7,17 +7,19 @@
             <div class="field-name inline-block on-left-side m-r-0" for="email">
               Email:
             </div>
-            <li class="inline-block on-right-side">
+            <div class="inline-block on-right-side">
               <input 
                 type="text" 
                 name="email"
                 v-model="form.email" 
                />
-            </li>
-
+            </div>
           </div>
+          
           <div class="field-container m-tb-5">
-            <div class="field-name inline-block on-left-side m-r-0" for="password">Password:</div>
+            <div class="field-name inline-block on-left-side m-r-0" for="password">
+              Password:
+            </div>
             <div class="inline-block on-right-side">
               <input 
                  type="password" 
@@ -87,7 +89,7 @@ export default {
 }
 
 .field-container {
-  width: 350px;
+  width: 400px;
 }
 
 .field-name {
